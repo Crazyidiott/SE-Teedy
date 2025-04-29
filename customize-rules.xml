@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+
+<ruleset name="Custom Rules"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+    <description>
+        My custom rules
+    </description>
+
+    <!-- Lines of code -->
+    <rule ref="category/java/design.xml/NcssCount" />  
+
+    <!-- CyclomaticComplexity -->
+    <rule ref="category/java/design.xml/CyclomaticComplexity" />
+
+    <!-- Weighted Methods per Class -->
+    <rule ref="category/java/design.xml/ExcessivePublicCount" />
+    <rule ref="category/java/design.xml/TooManyFields" />
+    <!-- <rule ref="category/java/design.xml/DataClass" /> -->
+
+    <!-- Coupling Between Objects -->
+    <rule ref="category/java/design.xml/CouplingBetweenObjects" />
+
+    <!-- Lack of Cohesion in Methods  -->
+    <rule ref="category/java/design.xml/GodClass" />
+
+</ruleset>
+

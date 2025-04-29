@@ -235,5 +235,11 @@
       </resource>
     </resources>
   </build>
-
+  
+  <!-- <distributionManagement>
+    <site>
+      <id>${project.artifactId}-site</id>
+      <url>file://${project.build.directory}/site</url>
+    </site>
+  </distributionManagement> -->
 </project>
