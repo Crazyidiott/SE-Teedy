@@ -1,0 +1,103 @@
+<style>
+    /* No navbar in register screen */
+    .navbar {
+      display: none;
+    }
+  
+    /* Absolute positionned footer on top of the register background */
+    .footer {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      border: none;
+    }
+  
+    @media screen and (min-width: 768px) {
+      .footer {
+        width: 50%;
+      }
+    }
+  
+    /* Smaller links everywhere on register */
+    a {
+      font-size: 90%;
+      color: #666;
+    }
+  </style>
+  <div class="row vertical-center">
+    <div class="col-sm-6 col-xs-12 login-box">
+      <div class="row">
+        <div class="col-lg-offset-4 col-lg-4 col-xs-offset-1 col-xs-10">
+          <img src="img/title.png" class="img-responsive" />
+          
+          <div class="text-center">
+            <h3>{{ 'register.title' | translate }}</h3>
+          </div>
+  
+          <div class="alert alert-success" ng-show="isSuccess">
+            <strong>{{ 'register.success' | translate }}</strong>
+          </div>
+  
+          <div class="alert alert-danger" ng-show="isError">
+            <strong>{{ 'register.error' | translate }}</strong>
+            <ul>
+              <li ng-show="errorUsername">{{ 'register.error_username' | translate }}</li>
+              <li ng-show="errorPassword">{{ 'register.error_password' | translate }}</li>
+              <li ng-show="errorEmail">{{ 'register.error_email' | translate }}</li>
+              <li ng-show="errorAlreadyExists">{{ 'register.error_already_exists' | translate }}</li>
+              <li ng-show="errorRegistrationPending">{{ 'register.error_already_pending' | translate }}</li>
+            </ul>
+          </div>
+  
+          <form ng-show="!isSuccess">
+            <div class="form-group">
+              <label class="sr-only" for="inputUsername">{{ 'register.username' | translate }}</label>
+              <input class="form-control" type="text" id="inputUsername" name="username"
+                     ng-attr-placeholder="{{ 'register.username' | translate }}" ng-model="user.username" />
+            </div>
+  
+            <div class="form-group">
+              <label class="sr-only" for="inputPassword">{{ 'register.password' | translate }}</label>
+              <input class="form-control" type="password" id="inputPassword" name="password"
+                     ng-attr-placeholder="{{ 'register.password' | translate }}" ng-model="user.password" />
+            </div>
+  
+            <div class="form-group">
+              <label class="sr-only" for="inputEmail">{{ 'register.email' | translate }}</label>
+              <input class="form-control" type="email" id="inputEmail" name="email"
+                     ng-attr-placeholder="{{ 'register.email' | translate }}" ng-model="user.email" />
+            </div>
+  
+            <div class="form-group">
+              <label class="sr-only" for="inputMessage">{{ 'register.message' | translate }}</label>
+              <textarea class="form-control" id="inputMessage" name="message" rows="3"
+                        ng-attr-placeholder="{{ 'register.message' | translate }}" ng-model="user.message"></textarea>
+            </div>
+  
+            <div class="row">
+              <div class="col-md-6">
+                <button type="submit" class="btn btn-primary" ng-click="register()">
+                  <span class="fas fa-user-plus"></span> {{ 'register.submit' | translate }}
+                </button>
+              </div>
+  
+              <div class="col-md-6 text-right">
+                <div class="well-sm">
+                  <a href="#/login">{{ 'register.back' | translate }}</a>
+                </div>
+              </div>
+            </div>
+          </form>
+  
+          <div class="text-center" ng-show="isSuccess">
+            <button class="btn btn-default" ng-click="backToLogin()">
+              <span class="fas fa-arrow-left"></span> {{ 'register.back' | translate }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <div class="login-img-container col-sm-6 hidden-xs"></div>
+  </div>
