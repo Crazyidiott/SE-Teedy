@@ -1854,4 +1854,5 @@
 
 353 directories, 1499 files
 
- sudo apt install default-jdk ffmpeg grunt maven npm tesseract-ocr-all 
+sudo apt install default-jdk ffmpeg grunt maven npm tesseract-ocr-all 
+a6eab9b642bb4d96aee81dcb7db63505

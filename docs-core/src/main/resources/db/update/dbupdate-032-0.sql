@@ -1,3 +1,5 @@
+-- DBUPDATE-032-0.SQL
+
 create cached table T_USER_REGISTRATION (
     REG_ID_C varchar(36) not null, 
     REG_USERNAME_C varchar(50) not null,

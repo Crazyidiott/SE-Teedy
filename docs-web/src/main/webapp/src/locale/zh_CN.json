@@ -264,7 +264,7 @@
     "menu_configuration": "配置",
     "menu_inbox": "收件箱扫描",
     "menu_server_logs": "服务器日志",
-      "menu_registration": "注册申请",
+    "menu_registration": "注册申请",
       "registration": {
       "menu": "注册申请",
       "title": "用户注册申请",
