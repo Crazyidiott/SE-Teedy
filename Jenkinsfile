@@ -3,9 +3,9 @@ pipeline {
     environment { 
         // define environment variable 
         // Jenkins credentials configuration 
-        DOCKER_HUB_CREDENTIALS = credentials('dockerhub_credentials') // Docker Hub credentials ID store in Jenkins 
+        DOCKER_HUB_CREDENTIALS = credentials('d7b120a7-2eb0-434a-8e5f-20e3b4a2f4cc') // Docker Hub credentials ID store in Jenkins 
         // Docker Hub Repository's name 
-        DOCKER_IMAGE = 'xx/teedy-app' // your Docker Hub user name and Repository's name 
+        DOCKER_IMAGE = 'liee2023/teedy2025_manual' // your Docker Hub user name and Repository's name 
         DOCKER_TAG = "${env.BUILD_NUMBER}" // use build number as tag 
     }
 
