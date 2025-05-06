@@ -75,7 +75,7 @@ pipeline {
                     )
 
                     docker.image("${env.DOCKER_IMAGE}:${env.DOCKER_TAG}").run( 
-                    '--name teedy-container-8084 -d -p 8081:8080' 
+                    '--name teedy-container-8084 -d -p 8084:8080' 
                     ) 
                     // Optional: list all teedy-containers 
                     sh 'docker ps --filter "name=teedy-container"' 
