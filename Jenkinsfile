@@ -13,9 +13,9 @@ pipeline {
         stage('Build') { 
             steps { 
                 checkout scmGit( 
-                    branches: [[name: '*/master']],  
+                    branches: [[name: '*/b-12112411']],  
                     extensions: [],  
-                    userRemoteConfigs: [[url: 'https://github.com/xx/Teedy.git']] 
+                    userRemoteConfigs: [[url: 'https://github.com/Crazyidiott/SE-Teedy.git']] 
                 // your github Repository 
                 ) 
                 sh 'mvn -B -DskipTests clean package' 
