@@ -182,7 +182,7 @@
             <configuration>
               <systemProperties>
                 <application.mode>dev</application.mode>
-                <docs.home>../data/docs</docs.home>
+                <docs.home>./data/docs</docs.home>
               </systemProperties>
               <webApp>
                 <contextPath>/docs-web</contextPath>

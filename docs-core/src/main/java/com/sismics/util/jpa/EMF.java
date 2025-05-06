@@ -88,6 +88,7 @@ public final class EMF {
         Properties props = new Properties();
         Path dbDirectory = DirectoryUtil.getDbDirectory();
         String dbFile = dbDirectory.resolve("docs").toAbsolutePath().toString();
+        log.info("Database file location: " + dbFile);
         if (Strings.isNullOrEmpty(databaseUrl)) {
             log.warn("Using an embedded H2 database. Only suitable for testing purpose, not for production!");
             props.put("hibernate.connection.driver_class", "org.h2.Driver");

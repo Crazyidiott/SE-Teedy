@@ -74,6 +74,7 @@ abstract class DbOpenHelper {
             try {
                 stmt = connection.createStatement();
                 ResultSet result = stmt.executeQuery("select c.CFG_VALUE_C from T_CONFIG c where c.CFG_ID_C='DB_VERSION'");
+                System.out.println(result);;
                 if (result.next()) {
                     String oldVersionStr = result.getString(1);
                     oldVersion = Integer.parseInt(oldVersionStr);
@@ -143,6 +144,7 @@ abstract class DbOpenHelper {
             }
             InputStream is = getClass().getResourceAsStream("/db/update/" + fileName);
             executeScript(is);
+            System.out.println("Executed script: " + fileName);
         }
     }
 
