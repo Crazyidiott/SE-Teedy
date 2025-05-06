@@ -48,12 +48,34 @@ pipeline {
         stage('Run containers') { 
             steps { 
                 script { 
+                    // // stop then remove containers if exists 
+                    // sh 'docker stop teedy-container-8081 || true' 
+                    // sh 'docker rm teedy-container-8081 || true' 
+                    // // run Container 
+                    // docker.image("${env.DOCKER_IMAGE}:${env.DOCKER_TAG}").run( 
+                    // '--name teedy-container-8081 -d -p 8081:8080' 
+                    // ) 
+                    // // Optional: list all teedy-containers 
+                    // sh 'docker ps --filter "name=teedy-container"' 
+
                     // stop then remove containers if exists 
+                    sh 'docker stop teedy-container-8082 || true' 
+                    sh 'docker rm teedy-container-8082 || true' 
+                    sh 'docker stop teedy-container-8083 || true' 
+                    sh 'docker rm teedy-container-8083 || true' 
                     sh 'docker stop teedy-container-8081 || true' 
                     sh 'docker rm teedy-container-8081 || true' 
                     // run Container 
                     docker.image("${env.DOCKER_IMAGE}:${env.DOCKER_TAG}").run( 
-                    '--name teedy-container-8081 -d -p 8081:8080' 
+                    '--name teedy-container-8082 -d -p 8082:8080' 
+                    ) 
+
+                    docker.image("${env.DOCKER_IMAGE}:${env.DOCKER_TAG}").run( 
+                    '--name teedy-container-8083 -d -p 8083:8080' 
+                    )
+
+                    docker.image("${env.DOCKER_IMAGE}:${env.DOCKER_TAG}").run( 
+                    '--name teedy-container-8084 -d -p 8081:8080' 
                     ) 
                     // Optional: list all teedy-containers 
                     sh 'docker ps --filter "name=teedy-container"' 
