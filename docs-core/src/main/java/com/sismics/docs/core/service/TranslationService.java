@@ -7,6 +7,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
@@ -21,10 +23,12 @@ import org.slf4j.LoggerFactory;
 
 import com.sismics.docs.core.constant.ConfigType;
 import com.sismics.docs.core.dao.FileDao;
+import com.sismics.docs.core.dao.UserDao;
 import com.sismics.docs.core.model.jpa.File;
+import com.sismics.docs.core.model.jpa.User;
 import com.sismics.docs.core.util.ConfigUtil;
 import com.sismics.docs.core.util.DirectoryUtil;
-
+import com.sismics.docs.core.util.EncryptionUtil;
 /**
  * Translation service.
  *
@@ -54,22 +58,35 @@ public class TranslationService {
      * @return Flow number for tracking the translation
      */
     public String uploadForTranslation(String fileId, String sourceLanguage, String targetLanguage, String userId) {
+    try {
+        // 获取文件
+        FileDao fileDao = new FileDao();
+        File file = fileDao.getActiveById(fileId);
+        if (file == null) {
+            log.error("File not found: {}", fileId);
+            return null;
+        }
+        
+        // 获取用户信息以获取私钥
+        UserDao userDao = new UserDao();
+        User user = userDao.getById(userId);
+        if (user == null) {
+            log.error("User not found: {}", userId);
+            return null;
+        }
+        
+        // 解密文件到临时文件
+        Path encryptedFile = DirectoryUtil.getStorageDirectory().resolve(file.getId());
+        Path decryptedFile = EncryptionUtil.decryptFile(encryptedFile, user.getPrivateKey());
+        
+        // 读取解密后的文件内容
+        byte[] decryptedContent = java.nio.file.Files.readAllBytes(decryptedFile);
+        
         try {
-            // Get the file
-            FileDao fileDao = new FileDao();
-            File file = fileDao.getActiveById(fileId);
-            if (file == null) {
-                return null;
-            }
+            // 编码为Base64
+            String fileBase64 = Base64.getEncoder().encodeToString(decryptedContent);
             
-            // Get file content
-            java.io.File storedFile = DirectoryUtil.getStorageDirectory().resolve(file.getId()).toFile();
-            byte[] fileContent = java.nio.file.Files.readAllBytes(storedFile.toPath());
-            
-            // Encode file content in Base64
-            String fileBase64 = Base64.getEncoder().encodeToString(fileContent);
-            
-            // Get API credentials from configuration
+            // 获取API凭证
             String appKey = ConfigUtil.getConfigStringValue(ConfigType.YOUDAO_APP_KEY);
             String appSecret = ConfigUtil.getConfigStringValue(ConfigType.YOUDAO_APP_SECRET);
             
@@ -78,14 +95,14 @@ public class TranslationService {
                 return null;
             }
             
-            // Prepare request parameters
+            // 准备请求参数
             Map<String, String> params = new HashMap<>();
             String salt = UUID.randomUUID().toString();
             String curtime = String.valueOf(System.currentTimeMillis() / 1000);
             String signStr = appKey + truncate(fileBase64) + salt + curtime + appSecret;
             String sign = getDigest(signStr);
             
-            // Determine file type
+            // 确定文件类型
             String fileType = getFileTypeFromMimetype(file.getMimeType());
             if (fileType == null) {
                 log.error("Unsupported file type for translation: {}", file.getMimeType());
@@ -104,24 +121,34 @@ public class TranslationService {
             params.put("docType", "json");
             params.put("signType", "v3");
             
-            // Call Youdao API
+            // 调用有道API
+            log.info("Uploading file {} ({} bytes) for translation from {} to {}", 
+                     file.getName(), decryptedContent.length, sourceLanguage, targetLanguage);
             String response = sendPostRequest(YOUDAO_URL_UPLOAD, params);
             
-            // Parse response
+            // 解析响应
             Map<String, Object> responseMap = parseJsonResponse(response);
             if (responseMap.containsKey("errorCode") && "0".equals(responseMap.get("errorCode"))) {
-                return (String) responseMap.get("flownumber");
+                String flowNumber = (String) responseMap.get("flownumber");
+                log.info("File upload successful, flow number: {}", flowNumber);
+                return flowNumber;
             } else {
                 log.error("Error uploading file for translation: {}", response);
                 return null;
             }
-            
-        } catch (Exception e) {
-            log.error("Error uploading document for translation", e);
-            return null;
+        } finally {
+            // 删除临时文件
+            try {
+                Files.deleteIfExists(decryptedFile);
+            } catch (java.io.IOException e) {
+                log.warn("Could not delete temporary file: {}", decryptedFile, e);
+            }
         }
+    } catch (Exception e) {
+        log.error("Error uploading document for translation", e);
+        return null;
     }
-    
+}
     /**
      * Check the status of a translation job.
      * 
