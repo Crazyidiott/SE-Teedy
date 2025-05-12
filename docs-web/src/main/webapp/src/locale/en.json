@@ -219,7 +219,16 @@
     "view": {
       "previous": "Previous",
       "next": "Next",
-      "not_found": "File not found"
+      "not_found": "File not found",
+      "translate": "Translate",
+      "translate_title": "Translate Document",
+      "source_language": "Source Language",
+      "target_language": "Target Language",
+      "start_translation": "Start Translation",
+      "translation_in_progress": "Translation in progress...",
+      "translation_complete": "Translation complete! Click the download button to get your translated document.",
+      "download_translation": "Download Translation",
+      "translation_api_not_configured": "The translation API is not configured. Please ask your administrator to configure it in Settings."
     },
     "edit": {
       "title": "Edit file",
@@ -447,6 +456,11 @@
       "updated": "Account successfully updated"
     },
     "config": {
+      "title_translation": "Translation API",
+      "message_translation": "Configure the Youdao Translation API credentials to enable document translation.",
+      "youdao_app_key": "API Key",
+      "youdao_app_secret": "API Secret",
+      "translation_updated": "Translation configuration updated successfully",
       "title_guest_access": "Guest access",
       "message_guest_access": "Guest access is a mode where anyone can access {{ appName }} without password.<br/>Like a normal user, the guest user can only access its documents and those accessible through permissions.<br/>",
       "enable_guest_access": "Enable guest access",

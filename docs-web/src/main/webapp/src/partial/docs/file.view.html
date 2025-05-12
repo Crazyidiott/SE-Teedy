@@ -22,6 +22,14 @@
   </div>
   
   <div class="btn-group pull-right">
+    <!-- 添加翻译按钮 -->
+    <button type="button" class="btn btn-default" 
+            uib-tooltip="{{ 'file.view.translate_tooltip' | translate }}" 
+            tooltip-append-to-body="true" 
+            ng-click="translateFile()" 
+            ng-if="canTranslate">
+      <span class="fas fa-language"></span>
+    </button>
     <button type="button" class="btn btn-default" uib-tooltip="Print this file" tooltip-append-to-body="true" ng-click="printFile()">
       <span class="fas fa-print"></span>
     </button>
@@ -57,4 +65,67 @@
     <span class="fas fa-exclamation-triangle"></span>
     {{ 'file.view.not_found' | translate }}
   </p>
+</div>
+
+<!-- 添加翻译模态框 -->
+<div class="modal fade" id="translateModal" tabindex="-1" role="dialog" aria-labelledby="translateModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="translateModalLabel">{{ 'file.view.translate_title' | translate }}</h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal" name="translateForm" novalidate>
+          <div class="form-group">
+            <label class="col-sm-3 control-label">{{ 'file.view.source_language' | translate }}</label>
+            <div class="col-sm-9">
+              <select class="form-control" ng-model="translate.sourceLanguage" required>
+                <option ng-repeat="language in languages" value="{{ language.code }}">{{ language.name }}</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="col-sm-3 control-label">{{ 'file.view.target_language' | translate }}</label>
+            <div class="col-sm-9">
+              <select class="form-control" ng-model="translate.targetLanguage" required>
+                <option ng-repeat="language in languages" value="{{ language.code }}">{{ language.name }}</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="alert alert-info" ng-if="apiNotConfigured">
+            {{ 'file.view.translation_api_not_configured' | translate }}
+          </div>
+          
+          <div class="progress" ng-if="translationInProgress">
+            <div class="progress-bar progress-bar-striped active" role="progressbar" style="width: 100%">
+              <span>{{ translate.statusText || ('file.view.translation_in_progress' | translate) }}</span>
+            </div>
+          </div>
+          
+          <div class="alert alert-success" ng-if="translate.statusCode == 4">
+            {{ 'file.view.translation_complete' | translate }}
+          </div>
+          
+          <div class="alert alert-danger" ng-if="translate.error">
+            {{ translate.error }}
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">{{ 'close' | translate }}</button>
+        <button type="button" class="btn btn-primary" ng-click="startTranslation()" 
+                ng-disabled="!translate.sourceLanguage || !translate.targetLanguage || translationInProgress || apiNotConfigured">
+          {{ 'file.view.start_translation' | translate }}
+        </button>
+        <a class="btn btn-success" ng-if="translate.statusCode == 4" 
+           href="../api/file/translate/download?flow_number={{ translate.flowNumber }}&file_type={{ translate.fileType }}&file_id={{ file.id }}&target_language={{ translate.targetLanguage }}" 
+           target="_blank">
+          {{ 'file.view.download_translation' | translate }}
+        </a>
+      </div>
+    </div>
+  </div>
 </div>

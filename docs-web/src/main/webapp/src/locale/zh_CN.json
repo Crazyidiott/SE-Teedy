@@ -95,6 +95,15 @@
     "quota": "{{ current | number: 0 }}MB ({{ current | number: 1 }}%) 已使用 {{ total | number: 0 }}MB",
     "count": "找到{{ count }}个文件",
     "view": {
+      "translate": "翻译",
+      "translate_title": "翻译文档",
+      "source_language": "源语言",
+      "target_language": "目标语言",
+      "start_translation": "开始翻译",
+      "translation_in_progress": "翻译进行中...",
+      "translation_complete": "翻译完成！点击下载按钮获取翻译后的文档。",
+      "download_translation": "下载翻译",
+      "translation_api_not_configured": "翻译API未配置。请联系管理员在设置中配置。",
       "delete_comment_title": "删除评论",
       "delete_comment_message": "您是否确认删除此评论?",
       "delete_document_title": "删除文档",
@@ -386,6 +395,11 @@
       "updated": "帐号更新成功"
     },
     "config": {
+      "title_translation": "翻译API",
+      "message_translation": "配置有道翻译API凭证以启用文档翻译功能。",
+      "youdao_app_key": "API密钥",
+      "youdao_app_secret": "API密钥",
+      "translation_updated": "翻译配置已成功更新",
       "title_guest_access": "游客 <small>权限</small>",
       "message_guest_access": "游客权限是所有人都能无需密码即获取 {{ appName }} 的权限模式.<br/>和其他正常用户一样, 游客权限用户也只能通过其获取的权限来访问其文档.<br/>",
       "enable_guest_access": "激活游客权限",
