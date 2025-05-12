@@ -117,4 +117,39 @@ angular.module('docs').controller('SettingsConfig', function($scope, $rootScope,
       $scope.loadWebhooks();
     });
   };
+
+  $scope.updateTranslationConfig = function() {
+  $scope.translationSuccess = false;
+  
+  // 更新APP KEY
+  Restangular.one('app/config').customPUT({
+    key: 'YOUDAO_APP_KEY',
+    value: $scope.youdao_app_key
+  }).then(function() {
+    // 更新APP SECRET
+    return Restangular.one('app/config').customPUT({
+      key: 'YOUDAO_APP_SECRET',
+      value: $scope.youdao_app_secret
+    });
+  }).then(function() {
+    $scope.translationSuccess = true;
+    
+    // 3秒后隐藏成功消息
+    setTimeout(function() {
+      $scope.$apply(function() {
+        $scope.translationSuccess = false;
+      });
+    }, 3000);
+  }, function(error) {
+    console.error('Failed to update translation config:', error);
+    $scope.translationError = true;
+    
+    // 3秒后隐藏错误消息
+    setTimeout(function() {
+      $scope.$apply(function() {
+        $scope.translationError = false;
+      });
+    }, 3000);
+  });
+};
 });

@@ -1,5 +1,21 @@
 package com.sismics.docs.rest.resource;
 
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.text.MessageFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Appender;
+import org.apache.log4j.Level;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.base.Strings;
 import com.sismics.docs.core.constant.ConfigType;
 import com.sismics.docs.core.constant.Constants;
@@ -26,24 +42,19 @@ import com.sismics.util.context.ThreadLocalContext;
 import com.sismics.util.log4j.LogCriteria;
 import com.sismics.util.log4j.LogEntry;
 import com.sismics.util.log4j.MemoryAppender;
+
 import jakarta.json.Json;
 import jakarta.json.JsonArrayBuilder;
 import jakarta.json.JsonObjectBuilder;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
-import jakarta.ws.rs.*;
+import jakarta.ws.rs.FormParam;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Response;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.log4j.Appender;
-import org.apache.log4j.Level;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.text.MessageFormat;
-import java.util.*;
 
 /**
  * General app REST resource.
@@ -56,6 +67,94 @@ public class AppResource extends BaseResource {
      * Logger.
      */
     private static final Logger log = LoggerFactory.getLogger(AppResource.class);
+
+    /**
+ * Get a single configuration value.
+ *
+ * @api {get} /app/config Get a configuration value
+ * @apiName GetAppConfigValue
+ * @apiGroup App
+ * @apiParam {String} key Configuration key
+ * @apiSuccess {String} value Configuration value
+ * @apiError (client) ForbiddenError Access denied
+ * @apiPermission admin
+ * @apiVersion 1.5.0
+ *
+ * @param key Configuration key
+ * @return Response
+ */
+@GET
+@Path("config")
+public Response getConfigValue(@QueryParam("key") String key) {
+    if (!authenticate()) {
+        throw new ForbiddenClientException();
+    }
+    checkBaseFunction(BaseFunction.ADMIN);
+    
+    if (StringUtils.isEmpty(key)) {
+        throw new ClientException("ValidationError", "Key is required");
+    }
+    
+    try {
+        ConfigType configType = ConfigType.valueOf(key);
+        ConfigDao configDao = new ConfigDao();
+        Config config = configDao.getById(configType);
+        
+        JsonObjectBuilder response = Json.createObjectBuilder();
+        if (config == null) {
+            response.addNull("value");
+        } else {
+            response.add("value", config.getValue());
+        }
+        
+        return Response.ok().entity(response.build()).build();
+    } catch (IllegalArgumentException e) {
+        // Key is not a valid ConfigType
+        throw new ClientException("ValidationError", "Invalid configuration key: " + key);
+    }
+}
+
+/**
+ * Update a configuration value.
+ *
+ * @api {put} /app/config Update a configuration value
+ * @apiName PutAppConfigValue
+ * @apiGroup App
+ * @apiParam {String} key Configuration key
+ * @apiParam {String} value Configuration value
+ * @apiSuccess {String} status Status OK
+ * @apiError (client) ForbiddenError Access denied
+ * @apiError (client) ValidationError Validation error
+ * @apiPermission admin
+ * @apiVersion 1.5.0
+ *
+ * @param key Configuration key
+ * @param value Configuration value
+ * @return Response
+ */
+@PUT
+@Path("config")
+public Response updateConfigValue(@FormParam("key") String key, @FormParam("value") String value) {
+    if (!authenticate()) {
+        throw new ForbiddenClientException();
+    }
+    checkBaseFunction(BaseFunction.ADMIN);
+    
+    ValidationUtil.validateRequired(key, "key");
+    
+    try {
+        ConfigType configType = ConfigType.valueOf(key);
+        ConfigDao configDao = new ConfigDao();
+        configDao.update(configType, value);
+        
+        JsonObjectBuilder response = Json.createObjectBuilder()
+                .add("status", "ok");
+        return Response.ok().entity(response.build()).build();
+    } catch (IllegalArgumentException e) {
+        // Key is not a valid ConfigType
+        throw new ClientException("ValidationError", "Invalid configuration key: " + key);
+    }
+}
 
     /**
      * Returns information about the application.
