@@ -374,7 +374,7 @@ angular.module('docs',
       }
     })
     .state('login', {
-      url: '/login?redirectState&redirectParams',
+      url: '/login', //?redirectState&redirectParams
       views: {
         'page': {
           templateUrl: 'partial/docs/login.html',

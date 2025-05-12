@@ -46,4 +46,12 @@ angular.module('docs').controller('Register', function($scope, $state, Restangul
       }
     });
   };
+  
+  /**
+   * Go back to login page.
+   */
+  $scope.backToLogin = function() {
+  // 不带任何参数直接导航到login状态
+    $state.go('login', {}, {location: 'replace'});
+  };
 });

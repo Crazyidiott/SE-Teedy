@@ -89,79 +89,106 @@
     </div>
   </div>
   
-  <!-- Registration details modal -->
-  <div class="modal fade" id="registrationModal" tabindex="-1" role="dialog" aria-labelledby="registrationModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content" ng-show="currentRegistration">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title" id="registrationModalLabel">{{ 'settings.registration.details' | translate }}</h4>
-        </div>
-        <div class="modal-body">
-          <dl class="dl-horizontal">
-            <dt>{{ 'settings.registration.username' | translate }}</dt>
-            <dd>{{ currentRegistration.username }}</dd>
-            
-            <dt>{{ 'settings.registration.email' | translate }}</dt>
-            <dd>{{ currentRegistration.email }}</dd>
-            
-            <dt>{{ 'settings.registration.date' | translate }}</dt>
-            <dd>{{ currentRegistration.create_date | date:'medium' }}</dd>
-            
-            <dt>{{ 'settings.registration.status' | translate }}</dt>
-            <dd>
-              <span class="label" ng-class="{
-                'label-warning': currentRegistration.status === 'PENDING',
-                'label-success': currentRegistration.status === 'APPROVED',
-                'label-danger': currentRegistration.status === 'REJECTED'
-              }">
-                {{ 'settings.registration.status_' + currentRegistration.status.toLowerCase() | translate }}
-              </span>
-            </dd>
-            
-            <dt ng-if="currentRegistration.approval_date">{{ 'settings.registration.approval_date' | translate }}</dt>
-            <dd ng-if="currentRegistration.approval_date">{{ currentRegistration.approval_date | date:'medium' }}</dd>
-            
-            <dt ng-if="currentRegistration.approved_by_username">{{ 'settings.registration.approved_by' | translate }}</dt>
-            <dd ng-if="currentRegistration.approved_by_username">{{ currentRegistration.approved_by_username }}</dd>
-            
-            <dt ng-if="currentRegistration.message">{{ 'settings.registration.message' | translate }}</dt>
-            <dd ng-if="currentRegistration.message">{{ currentRegistration.message }}</dd>
-          </dl>
+ <!-- Registration details modal - Angular style -->
+<div class="modal-backdrop fade in" ng-if="showModal" style="z-index: 1040;"></div>
+<div class="modal fade in" ng-if="showModal" style="display: block; z-index: 1050;">
+  <div class="modal-dialog">
+    <div class="modal-content" ng-show="currentRegistration">
+      <div class="modal-header">
+        <button type="button" class="close" ng-click="closeModal()">&times;</button>
+        <h4 class="modal-title">{{ 'settings.registration.details' | translate }}</h4>
+      </div>
+      <div class="modal-body">
+        <dl class="dl-horizontal">
+          <dt>{{ 'settings.registration.username' | translate }}</dt>
+          <dd>{{ currentRegistration.username }}</dd>
           
-          <div ng-if="currentRegistration.status === 'PENDING'">
-            <form ng-if="actionType === 'approve'">
-              <div class="form-group">
-                <label for="inputQuota">{{ 'settings.registration.storage_quota' | translate }}</label>
-                <div class="input-group">
-                  <input type="number" id="inputQuota" class="form-control" ng-model="actionData.storageQuota" min="1">
-                  <span class="input-group-addon">GB</span>
-                </div>
-                <p class="help-block">{{ 'settings.registration.storage_quota_help' | translate }}</p>
+          <dt>{{ 'settings.registration.email' | translate }}</dt>
+          <dd>{{ currentRegistration.email }}</dd>
+          
+          <dt>{{ 'settings.registration.date' | translate }}</dt>
+          <dd>{{ currentRegistration.create_date | date:'medium' }}</dd>
+          
+          <dt>{{ 'settings.registration.status' | translate }}</dt>
+          <dd>
+            <span class="label" ng-class="{
+              'label-warning': currentRegistration.status === 'PENDING',
+              'label-success': currentRegistration.status === 'APPROVED',
+              'label-danger': currentRegistration.status === 'REJECTED'
+            }">
+              {{ 'settings.registration.status_' + currentRegistration.status.toLowerCase() | translate }}
+            </span>
+          </dd>
+          
+          <dt ng-if="currentRegistration.approval_date">{{ 'settings.registration.approval_date' | translate }}</dt>
+          <dd ng-if="currentRegistration.approval_date">{{ currentRegistration.approval_date | date:'medium' }}</dd>
+          
+          <dt ng-if="currentRegistration.approved_by_username">{{ 'settings.registration.approved_by' | translate }}</dt>
+          <dd ng-if="currentRegistration.approved_by_username">{{ currentRegistration.approved_by_username }}</dd>
+          
+          <dt ng-if="currentRegistration.message">{{ 'settings.registration.message' | translate }}</dt>
+          <dd ng-if="currentRegistration.message">{{ currentRegistration.message }}</dd>
+        </dl>
+        
+        <div ng-if="currentRegistration.status === 'PENDING'">
+          <form ng-if="actionType === 'approve'">
+            <div class="form-group">
+              <label for="inputQuota">{{ 'settings.registration.storage_quota' | translate }}</label>
+              <div class="input-group">
+                <input type="number" id="inputQuota" class="form-control" ng-model="actionData.storageQuota" min="1">
+                <span class="input-group-addon">GB</span>
               </div>
-              <div class="form-group">
-                <label for="inputApproveMessage">{{ 'settings.registration.approve_message' | translate }}</label>
-                <textarea id="inputApproveMessage" class="form-control" ng-model="actionData.message" rows="3"></textarea>
-              </div>
-            </form>
-            
-            <form ng-if="actionType === 'reject'">
-              <div class="form-group">
-                <label for="inputRejectMessage">{{ 'settings.registration.reject_message' | translate }}</label>
-                <textarea id="inputRejectMessage" class="form-control" ng-model="actionData.message" rows="3"></textarea>
-              </div>
-            </form>
-          </div>
+              <p class="help-block">{{ 'settings.registration.storage_quota_help' | translate }}</p>
+            </div>
+            <div class="form-group">
+              <label for="inputApproveMessage">{{ 'settings.registration.approve_message' | translate }}</label>
+              <textarea id="inputApproveMessage" class="form-control" ng-model="actionData.message" rows="3"></textarea>
+            </div>
+          </form>
+          
+          <form ng-if="actionType === 'reject'">
+            <div class="form-group">
+              <label for="inputRejectMessage">{{ 'settings.registration.reject_message' | translate }}</label>
+              <textarea id="inputRejectMessage" class="form-control" ng-model="actionData.message" rows="3"></textarea>
+            </div>
+          </form>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">{{ 'close' | translate }}</button>
-          <button type="button" class="btn btn-success" ng-if="currentRegistration.status === 'PENDING' && actionType === 'approve'" ng-click="confirmAction()">
-            {{ 'settings.registration.approve' | translate }}
-          </button>
-          <button type="button" class="btn btn-danger" ng-if="currentRegistration.status === 'PENDING' && actionType === 'reject'" ng-click="confirmAction()">
-            {{ 'settings.registration.reject' | translate }}
-          </button>
-        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" ng-click="closeModal()">{{ 'close' | translate }}</button>
+        <button type="button" class="btn btn-success" ng-if="currentRegistration.status === 'PENDING' && actionType === 'approve'" ng-click="confirmAction()">
+          {{ 'settings.registration.approve' | translate }}
+        </button>
+        <button type="button" class="btn btn-danger" ng-if="currentRegistration.status === 'PENDING' && actionType === 'reject'" ng-click="confirmAction()">
+          {{ 'settings.registration.reject' | translate }}
+        </button>
       </div>
     </div>
   </div>
+</div>
+
+<style>
+  .modal-backdrop.in {
+    opacity: 0.5;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+  }
+  
+  .modal.in {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    overflow: hidden;
+    outline: 0;
+  }
+  
+  .modal.in .modal-dialog {
+    margin: 30px auto;
+    max-width: 600px;
+  }
+</style>
