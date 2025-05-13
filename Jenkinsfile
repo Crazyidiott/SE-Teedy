@@ -3,7 +3,7 @@ pipeline {
 
      environment {
         DEPLOYMENT_NAME = "hello-node"
-        CONTAINER_NAME = "docs"
+        CONTAINER_NAME = "hello-node-8dffb55fb-wr57c"
         IMAGE_NAME = "liee2023/teedy2025_manual"
     }
     stages {
